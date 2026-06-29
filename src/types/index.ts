@@ -1,0 +1,82 @@
+export interface User {
+  id: number;
+  username: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  gender: string;
+  image: string;
+  token: string;
+  refreshToken: string;
+}
+
+export interface AuthResponse {
+  id: number;
+  username: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  gender: string;
+  image: string;
+  token: string;
+  refreshToken: string;
+}
+
+export interface Product {
+  id: number;
+  title: string;
+  description: string;
+  category: string;
+  price: number;
+  discountPercentage: number;
+  rating: number;
+  stock: number;
+  tags: string[];
+  brand?: string;
+  sku?: string;
+  weight?: number;
+  dimensions?: {
+    width: number;
+    height: number;
+    depth: number;
+  };
+  warrantyInformation?: string;
+  shippingInformation?: string;
+  availabilityStatus?: string;
+  reviews?: ProductReview[];
+  returnPolicy?: string;
+  minimumOrderQuantity?: number;
+  meta?: {
+    createdAt: string;
+    updatedAt: string;
+    barcode: string;
+    qrCode: string;
+  };
+  images: string[];
+  thumbnail: string;
+}
+
+export interface ProductReview {
+  rating: number;
+  comment: string;
+  date: string;
+  reviewerName: string;
+  reviewerEmail: string;
+}
+
+export interface ProductsResponse {
+  products: Product[];
+  total: number;
+  skip: number;
+  limit: number;
+}
+
+export interface ProductFormData {
+  title: string;
+  description: string;
+  price: number;
+  category: string;
+  stock: number;
+  brand: string;
+  thumbnail: string;
+}

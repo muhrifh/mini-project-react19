@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
-import { ArrowLeft, Edit, Trash2, Star } from "lucide-react";
+import { Edit, Trash2, Star } from "lucide-react";
+import { BackButton } from "@/components/shared/back-button";
 import {
   Dialog,
   DialogContent,
@@ -78,11 +79,7 @@ export default function ProductDetail() {
         title={product.title}
         subtitle={product.brand ? `by ${product.brand}` : undefined}
         actions={
-          <Button variant="ghost" asChild>
-            <Link to="/products" className="flex items-center">
-              <ArrowLeft className="h-4 w-4 mr-2" /> Back to Products
-            </Link>
-          </Button>
+          <BackButton to="/products" />
         }
       />
 
@@ -102,7 +99,7 @@ export default function ProductDetail() {
                 <button
                   key={i}
                   onClick={() => setSelectedImage(i)}
-                  className={`flex-shrink-0 w-20 h-20 rounded-md border-2 overflow-hidden ${
+                  className={`shrink-0 w-20 h-20 rounded-md border-2 overflow-hidden ${
                     selectedImage === i ? "border-primary" : "border-transparent"
                   }`}
                 >

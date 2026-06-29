@@ -8,9 +8,12 @@ interface ProductState {
   isLoading: boolean;
   error: string | null;
   searchQuery: string;
+  page: number;
+  limit: number;
   fetchProducts: (limit?: number, skip?: number) => Promise<void>;
   searchProducts: (query: string) => Promise<void>;
   setSearchQuery: (query: string) => void;
+  setPage: (page: number) => void;
   deleteProduct: (id: number) => Promise<void>;
 }
 
@@ -20,8 +23,10 @@ export const useProductStore = create<ProductState>((set) => ({
   isLoading: false,
   error: null,
   searchQuery: "",
+  page: 1,
+  limit: 10,
 
-  fetchProducts: async (limit = 30, skip = 0) => {
+  fetchProducts: async (limit = 10, skip = 0) => {
     set({ isLoading: true, error: null });
     try {
       const response = await api.getProducts(limit, skip);
@@ -29,6 +34,7 @@ export const useProductStore = create<ProductState>((set) => ({
         products: response.products,
         total: response.total,
         isLoading: false,
+        limit,
       });
     } catch (error) {
       set({
@@ -41,7 +47,7 @@ export const useProductStore = create<ProductState>((set) => ({
   searchProducts: async (query: string) => {
     if (!query.trim()) {
       const store = useProductStore.getState();
-      store.fetchProducts();
+      store.fetchProducts(store.limit, (store.page - 1) * store.limit);
       return;
     }
     set({ isLoading: true, error: null, searchQuery: query });
@@ -61,6 +67,8 @@ export const useProductStore = create<ProductState>((set) => ({
   },
 
   setSearchQuery: (query: string) => set({ searchQuery: query }),
+
+  setPage: (page: number) => set({ page }),
 
   deleteProduct: async (id: number) => {
     try {

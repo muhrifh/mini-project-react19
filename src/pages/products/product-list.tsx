@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { useProductStore } from "@/stores/product-store";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -19,13 +19,19 @@ import {
 import { toast } from "sonner";
 
 export default function ProductList() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const currentPage = parseInt(searchParams.get("page") || "1", 10);
+
   const {
     products,
     isLoading,
     searchQuery,
+    total,
+    limit,
     fetchProducts,
     searchProducts,
     setSearchQuery,
+    setPage,
     deleteProduct,
   } = useProductStore();
 
@@ -33,8 +39,10 @@ export default function ProductList() {
   const [localSearch, setLocalSearch] = useState(searchQuery);
 
   useEffect(() => {
-    fetchProducts();
-  }, [fetchProducts]);
+    setPage(currentPage);
+    const skip = (currentPage - 1) * limit;
+    fetchProducts(limit, skip);
+  }, [fetchProducts, currentPage, limit, setPage]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,6 +56,12 @@ export default function ProductList() {
       setDeleteId(null);
     }
   };
+
+  const handlePageChange = (newPage: number) => {
+    setSearchParams({ page: newPage.toString() });
+  };
+
+  const totalPages = Math.ceil(total / limit);
 
   return (
     <div className="space-y-6">
@@ -106,14 +120,14 @@ export default function ProductList() {
 
       {/* Products Grid */}
       {!isLoading && products.length > 0 && (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           {products.map((product) => (
             <Card key={product.id} className="overflow-hidden">
-              <div className="aspect-square overflow-hidden">
+              <div className="max-h-73 overflow-hidden border-b">
                 <img
                   src={product.thumbnail}
                   alt={product.title}
-                  className="w-full h-full object-cover hover:scale-105 transition-transform"
+                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                 />
               </div>
               <CardHeader className="pb-2">
@@ -129,7 +143,7 @@ export default function ProductList() {
                   {product.description}
                 </p>
                 <div className="flex justify-between items-center">
-                  <span className="text-2xl font-bold">${product.price}</span>
+                  <span className="text-xl font-medium">${product.price}</span>
                   <span className="text-sm text-muted-foreground">
                     Stock: {product.stock}
                   </span>
@@ -190,6 +204,63 @@ export default function ProductList() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Pagination */}
+      {!isLoading && products.length > 0 && totalPages > 1 && (
+        <div className="flex items-center justify-between">
+          <p className="text-sm text-muted-foreground">
+            Showing {(currentPage - 1) * limit + 1} to {Math.min(currentPage * limit, total)} of {total} products
+          </p>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              Previous
+            </Button>
+            {Array.from({ length: totalPages }, (_, i) => i + 1)
+              .filter((page) => {
+                if (totalPages <= 7) return true;
+                if (page === 1 || page === totalPages) return true;
+                if (Math.abs(page - currentPage) <= 1) return true;
+                return false;
+              })
+              .reduce<(number | "...")[]>((acc, page, i, arr) => {
+                if (i > 0 && page - (arr[i - 1] as number) > 1) {
+                  acc.push("...");
+                }
+                acc.push(page);
+                return acc;
+              }, [])
+              .map((page, i) =>
+                page === "..." ? (
+                  <span key={`ellipsis-${i}`} className="px-2 py-1 text-muted-foreground">
+                    ...
+                  </span>
+                ) : (
+                  <Button
+                    key={page}
+                    variant={currentPage === page ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => handlePageChange(page as number)}
+                  >
+                    {page}
+                  </Button>
+                )
+              )}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+            >
+              Next
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

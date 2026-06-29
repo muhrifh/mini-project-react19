@@ -184,18 +184,7 @@ src/
 
 ## Deployment Plan
 
-### Option A: Vercel (Recommended)
-```
-1. Push code ke GitHub public repo
-2. Login ke vercel.com dengan GitHub
-3. Import repository
-4. Framework: Vite
-5. Build command: pnpm build
-6. Output directory: dist
-7. Deploy
-```
-
-### Option B: Netlify
+### Netlify
 ```
 1. Push code ke GitHub public repo
 2. Login ke netlify.com

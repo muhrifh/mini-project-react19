@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useParams, Link } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { api } from "@/services/api";
 import type { ProductFormData } from "@/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,8 +7,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { BackButton } from "@/components/shared/back-button";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
+
+type FormErrors = Partial<Record<keyof ProductFormData, string>>;
 
 export default function ProductForm() {
   const { id } = useParams<{ id: string }>();
@@ -16,6 +19,7 @@ export default function ProductForm() {
   const isEditMode = Boolean(id);
   const [isLoading, setIsLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(isEditMode);
+  const [errors, setErrors] = useState<FormErrors>({});
 
   const [formData, setFormData] = useState<ProductFormData>({
     title: "",
@@ -63,8 +67,20 @@ export default function ProductForm() {
     }));
   };
 
+  const validate = (): boolean => {
+    const newErrors: FormErrors = {};
+    if (!formData.title.trim()) newErrors.title = "Title is required";
+    if (!formData.description.trim()) newErrors.description = "Description is required";
+    if (formData.price <= 0) newErrors.price = "Price must be greater than 0";
+    if (formData.stock < 0) newErrors.stock = "Stock cannot be negative";
+    if (!formData.category.trim()) newErrors.category = "Category is required";
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validate()) return;
     setIsLoading(true);
 
     try {
@@ -92,12 +108,8 @@ export default function ProductForm() {
   }
 
   return (
-    <div className="space-y-6 max-w-2xl mx-auto">
-      <Button variant="ghost">
-        <Link to="/products" className="flex items-center">
-          <ArrowLeft className="h-4 w-4 mr-2" /> Back to Products
-        </Link>
-      </Button>
+    <div className="space-y-6 max-w-2xl">
+      <BackButton to="/products" />
 
       <Card>
         <CardHeader>
@@ -105,20 +117,21 @@ export default function ProductForm() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="title">Title *</Label>
+            <div className="space-y-1.5">
+              <Label htmlFor="title" className="label-required">Title</Label>
               <Input
                 id="title"
                 name="title"
                 value={formData.title}
                 onChange={handleChange}
                 placeholder="Product title"
-                required
+                className={cn(errors.title && "border-destructive")}
               />
+              {errors.title && <p className="text-xs text-destructive">{errors.title}</p>}
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="description">Description *</Label>
+            <div className="space-y-1.5">
+              <Label htmlFor="description" className="label-required">Description</Label>
               <Textarea
                 id="description"
                 name="description"
@@ -126,13 +139,14 @@ export default function ProductForm() {
                 onChange={handleChange}
                 placeholder="Product description"
                 rows={4}
-                required
+                className={cn(errors.description && "border-destructive")}
               />
+              {errors.description && <p className="text-xs text-destructive">{errors.description}</p>}
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="price">Price *</Label>
+              <div className="space-y-1.5">
+                <Label htmlFor="price" className="label-required">Price</Label>
                 <Input
                   id="price"
                   name="price"
@@ -142,11 +156,12 @@ export default function ProductForm() {
                   placeholder="0.00"
                   min="0"
                   step="0.01"
-                  required
+                  className={cn(errors.price && "border-destructive")}
                 />
+                {errors.price && <p className="text-xs text-destructive">{errors.price}</p>}
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="stock">Stock *</Label>
+              <div className="space-y-1.5">
+                <Label htmlFor="stock" className="label-required">Stock</Label>
                 <Input
                   id="stock"
                   name="stock"
@@ -155,24 +170,26 @@ export default function ProductForm() {
                   onChange={handleChange}
                   placeholder="0"
                   min="0"
-                  required
+                  className={cn(errors.stock && "border-destructive")}
                 />
+                {errors.stock && <p className="text-xs text-destructive">{errors.stock}</p>}
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="category">Category *</Label>
+              <div className="space-y-1.5">
+                <Label htmlFor="category" className="label-required">Category</Label>
                 <Input
                   id="category"
                   name="category"
                   value={formData.category}
                   onChange={handleChange}
                   placeholder="e.g., electronics"
-                  required
+                  className={cn(errors.category && "border-destructive")}
                 />
+                {errors.category && <p className="text-xs text-destructive">{errors.category}</p>}
               </div>
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 <Label htmlFor="brand">Brand</Label>
                 <Input
                   id="brand"
@@ -184,7 +201,7 @@ export default function ProductForm() {
               </div>
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <Label htmlFor="thumbnail">Thumbnail URL</Label>
               <Input
                 id="thumbnail"

@@ -1,6 +1,6 @@
 import { useAuthStore } from "@/stores/auth-store";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Package, ShoppingCart, TrendingUp, Users } from "lucide-react";
+// import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+// import { Package, ShoppingCart, TrendingUp, Users } from "lucide-react";
 import { PageHeader } from "@/components/shared/page-header";
 
 export default function Home() {
@@ -13,7 +13,7 @@ export default function Home() {
         subtitle="Here's what's happening with your store today."
       />
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      {/* <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Products</CardTitle>
@@ -54,7 +54,7 @@ export default function Home() {
             <p className="text-xs text-muted-foreground">+180.1% from last month</p>
           </CardContent>
         </Card>
-      </div>
+      </div> */}
     </div>
   );
 }

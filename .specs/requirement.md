@@ -1,4 +1,4 @@
-Buatakan base app/mini project React Js:
+Mini project React Js:
 
 1. Minimal version 19
 2. Terdapat page Login => restAPI bisa menggunakan https://dummyjson.com/docs/auth#auth-login

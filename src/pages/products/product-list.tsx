@@ -123,7 +123,7 @@ export default function ProductList() {
       {!isLoading && products.length > 0 && (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           {products.map((product) => (
-            <Card key={product.id} className="overflow-hidden relative">
+            <Card key={product.id} className="overflow-hidden relative pt-0">
               <div className="max-h-72 overflow-hidden border-b">
                 <ImageLoader
                   src={product.thumbnail}

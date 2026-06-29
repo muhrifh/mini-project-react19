@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
-interface ImageLoaderProps extends React.ImgHTMLAttributes<HTMLImageElement> {}
+interface ImageLoaderProps extends React.ImgHTMLAttributes<HTMLImageElement> { }
 
 export function ImageLoader({ className, ...props }: ImageLoaderProps) {
   const [isLoaded, setIsLoaded] = useState(false);
 
   return (
-    <div className={cn("bg-muted animate-pulse", className)}>
+    <div className={cn(isLoaded ? '' : "bg-muted animate-pulse", className)}>
       <img
         {...props}
         className={cn(

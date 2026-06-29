@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Search, Eye, Edit, Trash2 } from "lucide-react";
 import { PageHeader } from "@/components/shared/page-header";
+import { ImageLoader } from "@/components/shared/image-loader";
 import {
   Dialog,
   DialogContent,
@@ -124,10 +125,10 @@ export default function ProductList() {
           {products.map((product) => (
             <Card key={product.id} className="overflow-hidden relative">
               <div className="max-h-72 overflow-hidden border-b">
-                <img
+                <ImageLoader
                   src={product.thumbnail}
                   alt={product.title}
-                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                  className="w-full h-72"
                 />
               </div>
               <Badge variant="secondary" className="absolute top-4 right-4 z-10">

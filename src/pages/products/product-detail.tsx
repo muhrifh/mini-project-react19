@@ -9,6 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 import { Edit, Trash2, Star } from "lucide-react";
 import { BackButton } from "@/components/shared/back-button";
+import { ImageLoader } from "@/components/shared/image-loader";
 import {
   Dialog,
   DialogContent,
@@ -87,10 +88,10 @@ export default function ProductDetail() {
         {/* Images */}
         <div className="space-y-4">
           <div className="aspect-square overflow-hidden rounded-lg border">
-            <img
+            <ImageLoader
               src={product.images[selectedImage] || product.thumbnail}
               alt={product.title}
-              className="w-full h-full object-contain"
+              className="w-full h-full"
             />
           </div>
           {product.images.length > 1 && (
@@ -103,7 +104,7 @@ export default function ProductDetail() {
                     selectedImage === i ? "border-primary" : "border-transparent"
                   }`}
                 >
-                  <img src={img} alt="" className="w-full h-full object-cover" />
+                  <ImageLoader src={img} alt={product.title} className="w-full h-full" />
                 </button>
               ))}
             </div>

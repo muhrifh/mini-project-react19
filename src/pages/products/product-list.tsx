@@ -122,28 +122,28 @@ export default function ProductList() {
       {!isLoading && products.length > 0 && (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           {products.map((product) => (
-            <Card key={product.id} className="overflow-hidden">
-              <div className="max-h-73 overflow-hidden border-b">
+            <Card key={product.id} className="overflow-hidden relative">
+              <div className="max-h-72 overflow-hidden border-b">
                 <img
                   src={product.thumbnail}
                   alt={product.title}
                   className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                 />
               </div>
-              <CardHeader className="pb-2">
-                <div className="flex justify-between items-start">
-                  <CardTitle className="text-lg line-clamp-1">
-                    {product.title}
-                  </CardTitle>
-                  <Badge variant="secondary">{product.category}</Badge>
-                </div>
+              <Badge variant="secondary" className="absolute top-4 right-4 z-10">
+                {product.category}
+              </Badge>
+              <CardHeader className="pb-0">
+                <CardTitle className="text-lg line-clamp-1">
+                  {product.title}
+                </CardTitle>
               </CardHeader>
               <CardContent className="pb-2">
-                <p className="text-sm text-muted-foreground line-clamp-2 mb-2">
+                <p className="text-xs text-muted-foreground line-clamp-3 mb-4">
                   {product.description}
                 </p>
                 <div className="flex justify-between items-center">
-                  <span className="text-xl font-medium">${product.price}</span>
+                  <span className="text-lg font-medium">${product.price}</span>
                   <span className="text-sm text-muted-foreground">
                     Stock: {product.stock}
                   </span>

@@ -214,6 +214,7 @@ export default function ProductForm() {
 
             <div className="flex gap-4 pt-4">
               <Button type="submit" disabled={isLoading} className="flex-1">
+                {isLoading && <div className="animate-spin rounded-full h-4 w-4 border-b border-b-white border-2 mr-2" />}
                 {isLoading
                   ? "Saving..."
                   : isEditMode
